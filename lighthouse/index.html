@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Developer portfolio — a lighthouse in a stormy sea." />
+    <title>Lighthouse, Ahmed Zuhair</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="./assets/index-Cu-3lEFb.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BSbGYcsy.css">
+  </head>
+  <body>
+    <canvas id="scene" aria-hidden="true"></canvas>
+
+    <nav id="menu" aria-label="Main">
+      <p id="owner" class="owner"></p>
+      <p id="role" class="role"></p>
+      <button id="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-items">Menu</button>
+      <button id="sound" type="button" aria-pressed="false" aria-label="Storm sound">🔇</button>
+      <div id="menu-items">
+        <button id="projects-toggle" type="button" aria-expanded="false" aria-controls="project-list">Projects</button>
+        <ul id="project-list" hidden></ul>
+        <button type="button" data-open="about">About</button>
+        <button type="button" data-open="contact">Contact</button>
+      </div>
+    </nav>
+
+    <p id="hint">Click a ship to see a project · the lighthouse is me · the buoy is contact</p>
+    <div id="hover-label" hidden></div>
+
+    <aside id="panel" tabindex="-1" inert aria-labelledby="panel-title">
+      <button id="panel-close" type="button" aria-label="Close">✕</button>
+      <div id="panel-body"></div>
+    </aside>
+
+    <div id="loader"><span>Lighting the lamp…</span></div>
+  </body>
+</html>
