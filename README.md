@@ -1,5 +1,8 @@
 # Ahmed Zuhair, portfolio
 
-A portfolio you play like Tetris. Each page is a stack of randomly packed blocks; drop the I piece into the gap (scroll, swipe, arrow keys or click) to clear the lines and move to the next page.
+Live at https://irfy2k.github.io.
 
-Live at https://irfy2k.github.io. One self-contained `index.html`, no build step.
+- `/` is the hub: one page with my work, experience and contact. Hover or scroll a project to play a clip of it running.
+- `/tetris/` is a portfolio you play like Tetris. One self-contained `index.html`, no build step.
+- `/lighthouse/` is a Three.js storm scene where each project is a ship (built with Vite).
+- `ahmed-zuhair-cv.pdf` is my CV.
