@@ -16,12 +16,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500;700&family=Funnel+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<script>try{const t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
 <style>
 /* Two columns on wide screens: a sticky rail holding identity, contact and a preview monitor,
    beside a scrolling index of work. The monitor plays whichever project is hovered or centred.
-   Single theme on purpose: white paper, black type, one red taken from the lighthouse. */
+   Two themes: white paper or ink, with one red taken from the lighthouse. Dark follows the OS
+   until the visitor picks one with the toggle. */
 :root{
   --bg:#FFFFFF; --well:#F1F1EF; --text:#000000; --muted:#5C5C5C; --border:#E0E0DD; --accent:#E8361C; --accent-text:#C42A12;
   --display:"Funnel Display","Helvetica Neue",Arial,sans-serif;
@@ -32,7 +34,26 @@
   --radius:2px; --ease:cubic-bezier(.2,0,0,1); --dur:200ms;
   color-scheme:light;
 }
+:root[data-theme="dark"]{--bg:#0C0C0D; --well:#18181A; --text:#F3F2EE; --muted:#9B9A95; --border:#2A2A2C; --accent:#FF4B2B; --accent-text:#FF7356; color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C0C0D; --well:#18181A; --text:#F3F2EE; --muted:#9B9A95; --border:#2A2A2C; --accent:#FF4B2B; --accent-text:#FF7356; color-scheme:dark}}
 *{box-sizing:border-box}
+
+/* Theme toggle and its liquid reveal. The new theme pours out of the button as a wobbling blob
+   (a View Transition mask driven from script), trailed by two ripple rings. */
+.theme{position:fixed;top:clamp(12px,2vw,24px);right:clamp(12px,2vw,24px);z-index:3;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;background:var(--bg);color:var(--text);cursor:pointer;transition:border-color var(--dur) var(--ease),transform 300ms cubic-bezier(.3,1.6,.5,1)}
+.theme:hover{border-color:var(--text)}
+.theme:active{transform:scale(.9)}
+.theme svg{width:20px;height:20px;grid-area:1/1;transition:transform 500ms cubic-bezier(.3,1.4,.5,1),opacity 250ms var(--ease)}
+.theme .moon{opacity:0;transform:rotate(-90deg) scale(.4)}
+:root[data-theme="dark"] .theme .sun{opacity:0;transform:rotate(90deg) scale(.4)}
+:root[data-theme="dark"] .theme .moon{opacity:1;transform:none}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme .sun{opacity:0;transform:rotate(90deg) scale(.4)}
+  :root:not([data-theme="light"]) .theme .moon{opacity:1;transform:none}
+}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.ripple{position:fixed;z-index:4;pointer-events:none;border-radius:50%;border:2px solid var(--accent);translate:-50% -50%}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:400 var(--step-0)/1.55 var(--body);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
 a{color:inherit;text-decoration:underline;text-decoration-color:var(--border);text-decoration-thickness:1px;text-underline-offset:.22em;transition:text-decoration-color var(--dur) var(--ease)}
@@ -123,6 +144,10 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space
 </style>
 
 <a class="skip" href="#work">Skip to work</a>
+<button type="button" class="theme" id="theme" aria-label="Dark theme" aria-pressed="false">
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
+</button>
 <div class="page">
   <header class="rail">
     <div>
@@ -260,8 +285,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space
 
 <template id="diagram">
   <svg viewBox="0 0 480 300" role="img" aria-label="Three models run on the same scenes and GPUs, then quality and cost are compared, then pruning, compression and keyframe selection are tested">
-    <g font-family="Funnel Sans, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#000">
-      <g fill="none" stroke="#000" stroke-width="1.5">
+    <g font-family="Funnel Sans, Helvetica Neue, Arial, sans-serif" font-size="13" fill="currentColor">
+      <g fill="none" stroke="currentColor" stroke-width="1.5">
         <rect x="16" y="40" width="128" height="40"/><rect x="16" y="96" width="128" height="40"/><rect x="16" y="152" width="128" height="40"/>
         <rect x="186" y="80" width="118" height="72"/>
         <rect x="346" y="40" width="118" height="40"/><rect x="346" y="96" width="118" height="40"/>
@@ -270,12 +295,12 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space
         <path d="M304 116h20V60h22M324 116h22"/>
         <path d="M405 136v40H245v52"/>
       </g>
-      <rect x="342" y="214" width="8" height="8" fill="#E8361C"/>
+      <rect x="342" y="214" width="8" height="8" style="fill:var(--accent)"/>
       <text x="28" y="65">MVSplat</text><text x="28" y="121">NoPoSplat</text><text x="28" y="177">AnySplat</text>
       <text x="198" y="108">Same scenes,</text><text x="198" y="126">same GPUs</text>
       <text x="358" y="65">Quality</text><text x="358" y="121">Cost</text>
       <text x="198" y="255">Pruning, compression, keyframes</text>
-      <text x="16" y="24" fill="#5C5C5C">Feed-forward 3D Gaussian Splatting benchmark</text>
+      <text x="16" y="24" style="fill:var(--muted)">Feed-forward 3D Gaussian Splatting benchmark</text>
     </g>
   </svg>
 </template>
@@ -292,6 +317,62 @@ copyBtn.addEventListener('click', () => {
 });
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Theme toggle. The new theme pours out of the button as a liquid blob: a wavy SVG outline whose
+// lobes morph (SMIL inside the mask image) while the mask grows over the page, plus two ripple rings.
+const themeBtn = document.getElementById('theme'), osDark = matchMedia('(prefers-color-scheme: dark)');
+const isDark = () => (document.documentElement.dataset.theme || (osDark.matches ? 'dark' : 'light')) === 'dark';
+const syncThemeBtn = () => { const d = isDark(); themeBtn.setAttribute('aria-pressed', d); themeBtn.setAttribute('aria-label', d ? 'Light theme' : 'Dark theme'); };
+syncThemeBtn();
+osDark.addEventListener('change', syncThemeBtn);
+
+// Closed Catmull-Rom curve through n points on a circle wobbled by two sine waves.
+function blobPath(seed) {
+  const n = 28, pts = [];
+  for (let i = 0; i < n; i++) {
+    const a = i / n * Math.PI * 2;
+    const r = 40 + 4.5 * Math.sin(a * 5 + seed) + 2.5 * Math.sin(a * 9 - seed * 1.7);
+    pts.push([50 + r * Math.cos(a), 50 + r * Math.sin(a)]);
+  }
+  const p = i => pts[(i + n) % n], f = v => v.toFixed(2);
+  let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+  for (let i = 0; i < n; i++) {
+    const [p0, p1, p2, p3] = [p(i - 1), p(i), p(i + 1), p(i + 2)];
+    d += `C${f(p1[0] + (p2[0] - p0[0]) / 6)} ${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(p2[0] - (p3[0] - p1[0]) / 6)} ${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])} ${f(p2[1])}`;
+  }
+  return d + 'Z';
+}
+const shapes = [0, 1.3, 2.6, 3.9, 0].map(blobPath);
+const blobMask = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='${shapes[0]}'><animate attributeName='d' dur='1.1s' repeatCount='indefinite' values='${shapes.join(';')}'/></path></svg>`)}")`;
+
+function ripple(x, y, size, delay) {
+  const r = Object.assign(document.createElement('div'), { className: 'ripple' });
+  r.style.left = x + 'px'; r.style.top = y + 'px';
+  document.body.append(r);
+  r.animate([{ width: '0px', height: '0px', opacity: .9, borderWidth: '3px' }, { width: size + 'px', height: size + 'px', opacity: 0, borderWidth: '1px' }],
+    { duration: 900, delay, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'backwards' }).finished.then(() => r.remove());
+}
+
+themeBtn.addEventListener('click', () => {
+  const next = isDark() ? 'light' : 'dark';
+  const apply = () => {
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    syncThemeBtn();
+  };
+  if (reduce || !document.startViewTransition) return apply();
+  const b = themeBtn.getBoundingClientRect(), x = b.left + b.width / 2, y = b.top + b.height / 2;
+  // The blob's wobble dips 8% inside its box, so oversize it to still cover the far corner.
+  const R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) * 1.3;
+  const vt = document.startViewTransition(apply);
+  vt.ready.then(() => {
+    const pseudo = '::view-transition-new(root)', opts = { duration: 1000, easing: 'cubic-bezier(.65,0,.25,1)', pseudoElement: pseudo };
+    const frame = s => ({ maskImage: blobMask, webkitMaskImage: blobMask, maskSize: `${2 * s}px ${2 * s}px`, webkitMaskSize: `${2 * s}px ${2 * s}px`, maskPosition: `${x - s}px ${y - s}px`, webkitMaskPosition: `${x - s}px ${y - s}px` });
+    document.documentElement.animate([frame(0), frame(R * .18), frame(R)], opts);
+    ripple(x, y, R * .9, 60);
+    ripple(x, y, R * .55, 220);
+  });
+});
 const wide = matchMedia('(min-width: 1024px)');
 // The monitor only works when the rail is tall enough to hold it; otherwise media goes inline.
 const rail = document.querySelector('.rail'), root = document.documentElement;
