@@ -52,7 +52,8 @@
   :root:not([data-theme="light"]) .theme .moon{opacity:1;transform:none}
 }
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
-::view-transition-new(root){-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+/* Hidden until the blob animation takes over, so the new theme never shows before the reveal starts */
+::view-transition-new(root){-webkit-mask:linear-gradient(#000 0 0) 0 0/0 0 no-repeat;mask:linear-gradient(#000 0 0) 0 0/0 0 no-repeat}
 .ripple{position:fixed;z-index:4;pointer-events:none;border-radius:50%;border:2px solid var(--accent);translate:-50% -50%}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:400 var(--step-0)/1.55 var(--body);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
@@ -366,9 +367,10 @@ themeBtn.addEventListener('click', () => {
   const R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) * 1.3;
   const vt = document.startViewTransition(apply);
   vt.ready.then(() => {
-    const pseudo = '::view-transition-new(root)', opts = { duration: 1000, easing: 'cubic-bezier(.65,0,.25,1)', pseudoElement: pseudo };
+    const pseudo = '::view-transition-new(root)', opts = { duration: 1000, fill: 'forwards', easing: 'cubic-bezier(.65,0,.25,1)', pseudoElement: pseudo };
     const frame = s => ({ maskImage: blobMask, webkitMaskImage: blobMask, maskSize: `${2 * s}px ${2 * s}px`, webkitMaskSize: `${2 * s}px ${2 * s}px`, maskPosition: `${x - s}px ${y - s}px`, webkitMaskPosition: `${x - s}px ${y - s}px` });
-    document.documentElement.animate([frame(0), frame(R * .18), frame(R)], opts);
+    const reveal = document.documentElement.animate([frame(0), frame(R * .18), frame(R)], opts);
+    vt.finished.then(() => reveal.cancel());
     ripple(x, y, R * .9, 60);
     ripple(x, y, R * .55, 220);
   });
